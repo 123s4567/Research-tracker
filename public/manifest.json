@@ -1,0 +1,46 @@
+{
+  "name": "MCA Research Tracker",
+  "short_name": "ResearchTracker",
+  "description": "MCA Research Group Allocation Tracker - NMIET Pune",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#2563eb",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/icons/icon-192.svg",
+      "sizes": "192x192",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "/icons/icon-512.svg",
+      "sizes": "512x512",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": ["education", "productivity"],
+  "screenshots": [],
+  "shortcuts": [
+    {
+      "name": "Dashboard",
+      "short_name": "Dashboard",
+      "description": "View research dashboard",
+      "url": "/"
+    },
+    {
+      "name": "Groups",
+      "short_name": "Groups",
+      "description": "Manage research groups",
+      "url": "/groups"
+    },
+    {
+      "name": "Kanban Board",
+      "short_name": "Kanban",
+      "description": "Kanban board view",
+      "url": "/kanban"
+    }
+  ]
+}

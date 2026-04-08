@@ -1,0 +1,308 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// ===== CORE MODELS =====
+
+model ResearchGroup {
+  id                String   @id @default(cuid())
+  groupId           String   @unique
+  title             String
+  description       String?
+  division          Division
+  type              GroupType
+
+  status            GroupStatus    @default(Proposed)
+  approvalStatus    ApprovalStatus @default(Pending)
+  approvalDate      DateTime?
+
+  memberCount       Int      @default(0)
+  successScore      Float    @default(0)
+  completionPercent Int      @default(0)
+
+  startDate         DateTime @default(now())
+  targetEndDate     DateTime?
+
+  faculty           Faculty  @relation(fields: [facultyId], references: [id])
+  facultyId         String
+  domain            Domain   @relation(fields: [domainId], references: [id])
+  domainId          String
+
+  students          Student[]
+  milestones        Milestone[]
+  comments          Comment[]
+  approvals         Approval[]
+  notifications     Notification[]
+  changeLogs        ChangeLog[]
+
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  @@index([facultyId])
+  @@index([domainId])
+  @@index([status])
+  @@index([division])
+}
+
+model Student {
+  id            String   @id @default(cuid())
+  prn           String   @unique
+  name          String
+  email         String?  @unique
+  phone         String?
+  division      Division
+  roll          Int
+  semester      String   @default("II")
+  academicYear  String   @default("2025-26")
+
+  skills        String[]
+  interests     String[]
+  gpa           Float    @default(0)
+
+  status        StudentStatus @default(Active)
+  assignedDate  DateTime      @default(now())
+
+  group         ResearchGroup @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  groupId       String
+  comments      Comment[]
+  notifications Notification[]
+
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@index([groupId])
+  @@index([prn])
+  @@index([division])
+}
+
+model Faculty {
+  id                String   @id @default(cuid())
+  name              String   @unique
+  email             String   @unique
+  phone             String?
+  title             String?
+
+  maxGroups         Int      @default(6)
+  preferredDomains  String[]
+  availability      String?
+
+  rating            Float    @default(0)
+  totalPublications Int      @default(0)
+
+  groups            ResearchGroup[]
+  approvals         Approval[]
+  comments          Comment[]
+  notifications     Notification[]
+
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+}
+
+model Domain {
+  id            String   @id @default(cuid())
+  name          String   @unique
+  category      String?
+  description   String?
+  color         String?
+  groupCount    Int      @default(0)
+
+  groups        ResearchGroup[]
+
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}
+
+model Milestone {
+  id                String          @id @default(cuid())
+  group             ResearchGroup   @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  groupId           String
+  name              String
+  description       String?
+  dueDate           DateTime
+  completionDate    DateTime?
+  status            MilestoneStatus @default(NotStarted)
+  completionPercent Int             @default(0)
+
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  @@unique([groupId, name])
+  @@index([groupId])
+  @@index([dueDate])
+  @@index([status])
+}
+
+model Approval {
+  id            String         @id @default(cuid())
+  group         ResearchGroup  @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  groupId       String
+  faculty       Faculty?       @relation(fields: [facultyId], references: [id], onDelete: SetNull)
+  facultyId     String?
+  approverType  ApproverType
+  approverName  String
+  status        ApprovalStatus @default(Pending)
+  comments      String?
+  approvalDate  DateTime?
+  order         Int
+
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@index([groupId])
+  @@index([status])
+}
+
+model Comment {
+  id            String        @id @default(cuid())
+  group         ResearchGroup @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  groupId       String
+  student       Student?      @relation(fields: [studentId], references: [id], onDelete: SetNull)
+  studentId     String?
+  faculty       Faculty?      @relation(fields: [facultyId], references: [id], onDelete: SetNull)
+  facultyId     String?
+  content       String
+  mentions      String[]
+
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@index([groupId])
+  @@index([createdAt])
+}
+
+model Notification {
+  id            String         @id @default(cuid())
+  group         ResearchGroup? @relation(fields: [groupId], references: [id], onDelete: SetNull)
+  groupId       String?
+  student       Student?       @relation(fields: [studentId], references: [id], onDelete: SetNull)
+  studentId     String?
+  faculty       Faculty?       @relation(fields: [facultyId], references: [id], onDelete: SetNull)
+  facultyId     String?
+  type          NotificationType
+  title         String
+  message       String
+  actionUrl     String?
+  isRead        Boolean  @default(false)
+
+  createdAt     DateTime @default(now())
+  readAt        DateTime?
+
+  @@index([studentId, isRead])
+  @@index([facultyId, isRead])
+  @@index([createdAt])
+}
+
+model ChangeLog {
+  id            String        @id @default(cuid())
+  group         ResearchGroup @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  groupId       String
+  changeType    ChangeType
+  details       Json
+  changedBy     String?
+
+  createdAt     DateTime @default(now())
+
+  @@index([groupId])
+  @@index([createdAt])
+}
+
+model User {
+  id            String   @id @default(cuid())
+  email         String   @unique
+  passwordHash  String
+  role          UserRole @default(Student)
+  name          String
+  linkedId      String?
+
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@index([email])
+}
+
+model Organization {
+  id            String   @id @default(cuid())
+  name          String   @unique
+  domain        String   @unique
+  settings      Json
+
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}
+
+// ===== ENUMS =====
+
+enum Division {
+  A
+  B
+}
+
+enum GroupType {
+  Respondent
+  NonResp
+  CrossDiv
+}
+
+enum GroupStatus {
+  Proposed
+  InReview
+  Active
+  Completed
+  OnHold
+}
+
+enum ApprovalStatus {
+  Pending
+  Approved
+  Rejected
+}
+
+enum ApproverType {
+  Coordinator
+  Dean
+  Faculty
+}
+
+enum MilestoneStatus {
+  NotStarted
+  InProgress
+  Completed
+  Overdue
+}
+
+enum StudentStatus {
+  Active
+  Inactive
+  Graduated
+  Withdrawn
+}
+
+enum NotificationType {
+  GroupCreated
+  StatusChanged
+  MilestoneAlert
+  ApprovalNeeded
+  Comment
+  Custom
+}
+
+enum ChangeType {
+  CREATED
+  UPDATED
+  DELETED
+  STATUS_CHANGED
+  FACULTY_SWAPPED
+  STUDENT_MOVED
+  APPROVAL_CHANGED
+}
+
+enum UserRole {
+  Student
+  Faculty
+  Coordinator
+  Admin
+}
