@@ -60,6 +60,7 @@ export default function SearchPage() {
     faculty: allResults.filter(r => r.type === 'faculty').length,
   }
 
+  // eslint-disable-next-line react-hooks/set-state-in-effect
   useEffect(() => { setRecent(getRecent()) }, [])
 
   // Keyboard shortcut '/' focuses search

@@ -48,6 +48,7 @@ export function Header({ onMenuClick }: HeaderProps) {
   const qc = useQueryClient()
   const { resolvedTheme, setTheme } = useTheme()
   const [mounted, setMounted] = useState(false)
+  // eslint-disable-next-line react-hooks/set-state-in-effect
   useEffect(() => { setMounted(true) }, [])
   const { data: notifData } = useNotifications()
   const notifications: Notification[] = notifData?.notifications ?? []

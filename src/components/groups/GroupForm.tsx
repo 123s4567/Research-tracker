@@ -75,13 +75,9 @@ export function GroupForm({ mode, groupId, defaultValues }: GroupFormProps) {
     if (defaultValues) reset({ ...defaultValues } as FormValues)
   }, [defaultValues, reset])
 
-  // eslint-disable-next-line react-hooks/incompatible-library
   const divisionVal = watch('division')
-  // eslint-disable-next-line react-hooks/incompatible-library
   const typeVal = watch('type')
-  // eslint-disable-next-line react-hooks/incompatible-library
   const facultyVal = watch('facultyId')
-  // eslint-disable-next-line react-hooks/incompatible-library
   const domainVal = watch('domainId')
 
   async function onSubmit(values: FormValues) {

@@ -1,6 +1,8 @@
 'use client'
 
 import { BarChart3, TrendingUp, Users, BookOpen, AlertTriangle, CheckCircle2, Clock, Target, Download } from 'lucide-react'
+
+const NOW_MS = Date.now()
 import Link from 'next/link'
 import { PageHeader } from '@/components/common/PageHeader'
 import { PageLoader } from '@/components/common/LoadingSpinner'
@@ -281,7 +283,7 @@ export default function AnalyticsPage() {
           <div className="space-y-2">
             {upcoming.slice(0, 10).map(m => {
               const daysLeft = Math.ceil(
-                (new Date(m.dueDate).getTime() - Date.now()) / (1000 * 60 * 60 * 24)
+                (new Date(m.dueDate).getTime() - NOW_MS) / (1000 * 60 * 60 * 24)
               )
               return (
                 <div key={m.id} className="flex items-center justify-between rounded-lg border bg-gray-50 px-3 py-2">

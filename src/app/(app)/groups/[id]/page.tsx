@@ -403,7 +403,7 @@ export default function GroupDetailPage({ params }: { params: Promise<{ id: stri
                 <div className="flex-1">
                   <p className="text-sm font-medium text-gray-900">{a.approverName}</p>
                   <p className="text-xs text-gray-400">{a.approverType}</p>
-                  {a.comments && <p className="text-xs text-gray-500 mt-1 italic">"{a.comments}"</p>}
+                  {a.comments && <p className="text-xs text-gray-500 mt-1 italic">&ldquo;{a.comments}&rdquo;</p>}
                 </div>
                 <div className="flex flex-col items-end gap-1 shrink-0">
                   <StatusBadge status={a.status} type="approval" />
