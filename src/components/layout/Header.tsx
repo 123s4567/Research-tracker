@@ -48,7 +48,7 @@ export function Header({ onMenuClick }: HeaderProps) {
   const qc = useQueryClient()
   const { resolvedTheme, setTheme } = useTheme()
   const [mounted, setMounted] = useState(false)
-  useEffect(() => setMounted(true), [])
+  useEffect(() => { setMounted(true) }, [])
   const { data: notifData } = useNotifications()
   const notifications: Notification[] = notifData?.notifications ?? []
   const unreadCount: number = notifData?.unreadCount ?? 0
