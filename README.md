@@ -1,6 +1,6 @@
 # MCA Research Group Allocation Tracker
 
-A production-grade research management system for **NMIET Pune**'s MCA programme — managing 58 research groups, 137 students, and 10 faculty guides.
+A production-grade research management system for MCA programme — managing 58 research groups, 137 students, and 10 faculty guides.
 
 Built with **Next.js 16**, **Prisma 7**, **PostgreSQL 15**, and **TypeScript**.
 
